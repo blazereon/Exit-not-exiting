@@ -1,0 +1,19 @@
+START ;
+
+END ;
+
+ROOM ;
+
+KEY ;
+
+LOCK ;
+
+content
+    : ROOM
+    | content KEY content LOCK content
+    | content content
+    ;
+
+DUNGEON
+    : START ROOM content ROOM END
+    ;
