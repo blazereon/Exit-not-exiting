@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 
 class Program
 {
@@ -7,58 +9,51 @@ class Program
 
     static void Main(string[] args)
     {
-        int numberOfStrings = 1; // Maximum number of loop
-        for (int i = 0; i < numberOfStrings; i++)
-        {
-            string randomString = GenerateRandomString("START", 0); // Start with depth 0
-            Console.WriteLine(randomString);
-            if(randomString == "EXIT"){
-                break;
-            }
-        } 
+            string randomString = genRoom("START", 0); // Start with depth 0
+            Console.Write(randomString);
+            Console.Write("EXIT");
     }
 
-    static string GenerateRandomString(string symbol, int numCount)
+    static string genRoom(string symbol, int numCount)
     {
-        if (numCount >= maxNum)
-        {
-            Console.WriteLine(numCount);
-            return "EXIT";
-        }
+        int keyNum = 0;
         
-        switch (symbol)
+        if (symbol == "START")
         {
-            case "START":
-                return "START" + "->" + GenerateRandomString("ROOM", numCount + 1) + GenerateRandomString("CONTENT", numCount + 1);
-
-            case "CONTENT":
-                int choice = random.Next(3);
-                if (choice == 0)
-                {
-                    return GenerateRandomString("ROOM", numCount + 1);
-                }
-                else if (choice == 1)
-                {
-                    return GenerateRandomString("KEY", numCount + 1) + GenerateRandomString("CONTENT", numCount + 1) + GenerateRandomString("LOCK", numCount + 1) + GenerateRandomString("CONTENT", numCount + 1);
-                }
-                else
-                {
-                    Console.WriteLine(numCount);
-                    return GenerateRandomString("CONTENT", numCount + 1);
-                }
-
-            // terminals:
-            case "ROOM":
-                return "ROOM" + "->";
-            
-            case "KEY":
-                return "KEY" + "->";
-            
-            case "LOCK":
-                return "LOCK" + "->";
-
-            default:
-                return "";
+            return "START" + " -> " + genRoom("ROOM", numCount + 1) + genRoom("CONTENT", numCount + 1);
+        }
+        else if (symbol == "CONTENT")
+        {
+            int choice = random.Next(3);
+            if (choice == 0)
+            {
+                return genRoom("ROOM", numCount + 1);
+            }
+            else if (choice == 1 && keyNum < 3)
+            {
+                keyNum ++;
+                return genRoom("KEY", numCount + 1) + genRoom("CONTENT", numCount + 1) + genRoom("LOCK", numCount + 1) + genRoom("CONTENT", numCount + 1);
+            }
+            else
+            {
+                return genRoom("CONTENT", numCount + 1);
+            }
+        }
+        else if (symbol == "ROOM")
+        {
+            return "ROOM" + " -> ";
+        }
+        else if (symbol == "KEY")
+        {
+            return "KEY" + " -> ";
+        }
+        else if (symbol == "LOCK")
+        {
+            return "LOCK" + " -> ";
+        }
+        else
+        {
+            return "";
         }
     }
 }
